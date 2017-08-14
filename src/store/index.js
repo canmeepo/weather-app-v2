@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 
 import rootReducer from '../reducers';
 
-const initialState = getStorage('locations') || {};
+const initialState = getStorage('places') || {};
 
 const configureStore = () => {
   const store = createStore(rootReducer, initialState, applyMiddleware(thunk));
