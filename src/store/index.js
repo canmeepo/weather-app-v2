@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
+import { getStorage } from '../utils/storage';
 import rootReducer from '../reducers';
 
 const initialState = getStorage('places') || {};
