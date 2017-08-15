@@ -34,6 +34,7 @@ export default class SearchBar extends React.Component {
           id="autocomplete"
           onChange={this.handlePlaceChange}
           placeholder="Enter place name"
+          style={{ width: '100%', margin: '20px' }}
           value={this.state.term}
         />
       </div>

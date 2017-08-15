@@ -1,18 +1,12 @@
-import { updateStorage } from '../utils/storage';
 import { pickBy, isEqual } from 'lodash';
+import { updateStorage } from '../utils/storage';
 
 const API_KEY = '7e76d39fbd4ed676341427f1e95f89ca';
-const ROOT_URL = `https://api.openweathermap.org/data/2.5`;
+const ROOT_URL = `https://api.openweathermap.org/data/2.5/weather`;
 
 export const ADD_PLACE = 'ADD_PLACE';
 export const REMOVE_PLACE = 'REMOVE_PLACE';
-export const GET_LOCATION = 'GET_LOCATION';
 export const UPDATE_PLACE = 'UPDATE_PLACE';
-export const DEFAULT_PLACE = {
-  lat: 55.75,
-  lon: 37.61,
-  placeName: 'Moscow, Russia'
-};
 
 export const url = (lat, lon) => {
   return `${ROOT_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
@@ -49,12 +43,13 @@ export const removePlace = id => {
     return dispatch(removePlaceById(id)).then(() => updateStorage('places', getState()));
   };
 };
-export function updatePlaces(lat, lon, placeName) {
+export const updatePlaces = (lat, lon, placeName) => {
   return (dispatch, getState) => {
     return dispatch(getPlace(lat, lon, placeName)).then(() => updateStorage('places', getState()));
   };
-}
-export function updatePlaceById(id, places) {
+};
+
+export const updatePlaceById = (id, places) => {
   const placeObj = pickBy(places, (value, key) => isEqual(parseInt(key, 10), id))[id];
   const { lat, lon } = placeObj.place.coord;
   const { placeName } = placeObj;
@@ -71,33 +66,23 @@ export function updatePlaceById(id, places) {
       })
       .catch(error => console.warn(error));
   };
-}
+};
 
-export function updatePlace(id) {
+export const updatePlace = id => {
   return (dispatch, getState) => {
     const state = getState();
 
     return dispatch(updatePlaceById(id, state)).then(() => updateStorage('places', state));
   };
-}
-
-export const getLocation = () => {
-  const geolocation = navigator.geolocation;
-  const location = new Promise((resolve, reject) => {
-    if (!geolocation) {
-      reject(new Error('Not Supported'));
-    }
-    geolocation.getCurrentPosition(
-      position => {
-        resolve(position);
-      },
-      () => {
-        reject(new Error('Permission denied'));
-      }
-    );
-  });
-  return {
-    type: GET_LOCATION,
-    payload: location
+};
+export const fetchLocation = () => {
+  return function(dispatch) {
+    let url = 'https://ipinfo.io/json';
+    fetch(url).then(res => res.json()).then(out => {
+      const lat = out.loc.split(',')[0];
+      const lon = out.loc.split(',')[1];
+      const city = out.city;
+      dispatch(updatePlaces({ lat, lon, city }));
+    });
   };
 };

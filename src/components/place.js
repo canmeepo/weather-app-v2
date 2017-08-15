@@ -7,16 +7,16 @@ export default function Place(props) {
   const { temp } = currentPlace.main;
 
   return (
-    <div className="place">
-      <span className="place-inner-item place-name">
+    <div style={{ border: '1px solid black', margin: '10px 20px' }}>
+      <div className="place-inner-item place-name">
         {placeName}
-      </span>
-      <span className="place-inner-item">
-        Temp.: <br /> {Math.ceil(temp)} &deg;C
-      </span>
-      <span onClick={removePlace} role="button" tabIndex="0" title="Remove place">
-        <span />
-      </span>
+      </div>
+      <div className="place-inner-item">
+        Temp.: {Math.ceil(temp)} &deg;C
+      </div>
+      <button onClick={removePlace} tabIndex="0" title="Remove place">
+        delete
+      </button>
     </div>
   );
 }
